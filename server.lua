@@ -1,25 +1,26 @@
 ESX = nil
-TriggerEvent('esx:getShtestaredObjtestect', function(obj) ESX = obj end)
-luski = {}
+TriggerEvent(Config.ESXSharedEvent, function(obj) ESX = obj end)
+shell = {}
 AddEventHandler("weaponDamageEvent", function(sender, data)
 	math.randomseed(os.time())
 	if math.random(1,2) == 1 then
-		local xPlayer = ESX.GetPlayerFromId(sender)
+		local src = sender
+		local xPlayer = ESX.GetPlayerFromId(src)
 		local job = xPlayer.job.name
 		if job == "sheriff" then
 			police = true
 		else
 			police = false
 		end
-		local hashbroni = data.weaponType
-		if Config.Weapons[hashbroni] then
-			local informacje = {
-				coords = GetEntityCoords(GetPlayerPed(sender)),
+		local weapon_hash = data.weaponType
+		if Config.Weapons[weapon_hash] then
+			local info = {
+				coords = GetEntityCoords(GetPlayerPed(src)),
 				stime = os.date("%H")..":"..os.date("%M"),
 				ispolice = police,
-				weapon = Config.Weapons[hashbroni],
+				weapon = Config.Weapons[weapon_hash],
 			}
-			table.insert(luski,informacje)
+			table.insert(shell,info)
 			changed = true
 		else
 			return
@@ -29,12 +30,11 @@ AddEventHandler("weaponDamageEvent", function(sender, data)
 	end
 end)
 
-RegisterNetEvent('luskawez')
-AddEventHandler('luskawez', function(id)
-	table.remove(luski,id)
-	TriggerClientEvent("luskiget",-1,luski)
+RegisterNetEvent('shell:take')
+AddEventHandler('shell:take', function(id)
+	table.remove(shell,id)
+	TriggerClientEvent("shell:get",-1,shell)
 end)
-
 
 --[[ NEED TO REWORK ]]--
 CreateThread(function()
@@ -47,7 +47,7 @@ if changed then
 		if GetPlayerName(id) ~= nil then
 			local xPlayer = ESX.GetPlayerFromId(id)
 			if xPlayer.job.name == "sheriff" then
-				TriggerClientEvent("luskiget",id,luski)
+				TriggerClientEvent("shell:get",id,shell)
 			end
 		end
 	end
