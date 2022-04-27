@@ -1,8 +1,8 @@
 ESX = nil
-TriggerEvent('esx:getShtestaredObjtestect', function(obj) ESX = obj end)
-luski = {}
-RegisterNetEvent("luskiget", function(l)
-	luski = l
+TriggerEvent(Config.ESXSharedEvent, function(obj) ESX = obj end)
+shell = {}
+RegisterNetEvent("shell:get", function(l)
+	shell = l
 end)
 
 CreateThread(function()
@@ -21,10 +21,10 @@ CreateThread(function()
   while true do
 	if tonumber(selectedweapon) == -1951375401 then
 		if IsPlayerFreeAiming(id) then
-			if #luski ~= 0 then
+			if #shell ~= 0 then
 			Wait(4)
-			for i=1, #luski do
-				local objectcoords = luski[i].coords
+			for i=1, #shell do
+				local objectcoords = shell[i].coords
 				local playercoords = GetEntityCoords(pid)
 				if #(playercoords-objectcoords) < 3.5 then
 					local grounded,zcord = GetGroundZFor_3dCoord(objectcoords.x,objectcoords.y,objectcoords.z,1)
@@ -35,11 +35,11 @@ CreateThread(function()
 						if camdist < 1.0 then
 							DrawMarker(28, coordszcord, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.02, 0.02, 237, 255, 14, 140, false, true, 2, nil, nil, false)
 							if IsControlJustReleased(0, 38) then
-								--print("Bron: "..luski[i].weapon)
-								--print("Godzina: "..luski[i].stime)				--[DEBUG]--
-								--print("Policyjna: "..tostring(luski[i].ispolice))
-								TriggerServerEvent("luskawez",i)
-								TriggerEvent("notyfikacjeb","Zapakowałeś łuskę do woreczka, zanieś go do laboratorium") -- ? ESX.ShowNotification() better compability
+								--print("Bron: "..shell[i].weapon)
+								--print("Godzina: "..shell[i].stime)				--[DEBUG]--
+								--print("Policyjna: "..tostring(shell[i].ispolice))
+								TriggerServerEvent("shell:take",i)
+								ESX.ShowNotification("Zapakowałeś łuskę do woreczka, zanieś go do laboratorium")
 							end
 						end
 					end
@@ -52,7 +52,7 @@ CreateThread(function()
 			Wait(1500)
 		end
 	else
-		Wait(5000)
+		Wait(4000)
 	end
   end
 end)

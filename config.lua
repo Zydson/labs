@@ -1,5 +1,7 @@
 Config = {}
 
+Config.ESXSharedEvent = "esx:getShtestaredObjtestect"
+
 Config.Weapons = {
 [453432689] = "Pistolet", -- PISOLET
 [1593441988] = "Pistolet Bojowy", -- BOJOWKA
