@@ -56,11 +56,21 @@ function PickUpShell(id)
 	picked = false
 end
 
+function LowestValue(t)
+  local k
+  for i, v in pairs(t) do
+    k = k or i
+    if v < t[k] then k = i end
+  end
+  return k
+end
+
 --[[
 	THREADS
 --]]
 
 shell = {}
+shell_onscreen = {}
 pickedup = {}
 picked = false
 CreateThread(function()
@@ -79,6 +89,7 @@ CreateThread(function()
 		if IsPlayerFreeAiming(id) then
 			if #shell ~= 0 then
 			Wait(4)
+			shell_onscreen = {}
 			for i=1, #shell do
 				local objectcoords = shell[i].coords
 				local playercoords = GetEntityCoords(pid)
@@ -89,11 +100,17 @@ CreateThread(function()
 						local coordszcord = vector3(objectcoords.x,objectcoords.y,zcord+0.2)
 						local camdist = #(camcord-coordszcord)
 						if camdist < 1.0 then
-							DrawMarker(28, coordszcord, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.02, 0.02, 237, 255, 14, 140, false, true, 2, nil, nil, false)
+							table.insert(shell_onscreen,camdist)
+							if camdist == LowestValue(shell_onscreen) then
+								triggered = i
+								DrawMarker(28, coordszcord, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.02, 0.02, 189, 14, 4, 140, false, true, 2, nil, nil, false)
+							else
+								DrawMarker(28, coordszcord, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.02, 0.02, 237, 255, 14, 140, false, true, 2, nil, nil, false)
+							end
 							if IsControlJustReleased(0, 38) then
 								if not picked then
 									picked = true
-									PickUpShell(i)
+									PickUpShell(triggered)
 								end
 							end
 						end
