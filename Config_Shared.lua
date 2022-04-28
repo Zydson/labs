@@ -17,6 +17,9 @@ Config.JobName = {
 	["ambulance"] = true,
 }
 
+-- [LAB COORDS] --
+Config.LabCoords = vector3(482.513,-988.598,29.68)
+
 -- ESX GetSharedObject event if needed -- TODO: automaticate this
 Config.ESXSharedEvent = "esx:getShtestaredObjtestect"
 
