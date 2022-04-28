@@ -1,5 +1,15 @@
 Config = {}
+-- [AVAILABLE LANGUAGES] --
+-- PL, EN, DE
+Config.Translation = "PL" 
 
+-- [FRAMEWORK] --
+Config.FrameWork = {
+    ESX = true,
+    QBcore = false,
+    StandAlone = false,
+}
+-- ESX GetSharedObject event if needed -- TODO: automaticate this
 Config.ESXSharedEvent = "esx:getShtestaredObjtestect"
 
 Config.Weapons = {

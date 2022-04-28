@@ -4,11 +4,14 @@ lua54 'yes'
 
 
 server_scripts {
-    "server.lua",
-	"config.lua",
+    "Server/server.lua",
+	"Config_Shared.lua",
 }
 
 client_scripts {
-    "client.lua",
-	"config.lua",
+    "Client/client.lua",
+	"Config_Shared.lua",
+    "Translation/pl.lua",
+    "Translation/en.lua",
+    "Translation/de.lua",
 }
