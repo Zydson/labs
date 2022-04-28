@@ -1,6 +1,6 @@
 Config = {}
 -- [AVAILABLE LANGUAGES] --
--- PL, EN, DE
+-- PL, EN
 Config.Translation = "PL" 
 
 -- [FRAMEWORK] --
@@ -9,15 +9,22 @@ Config.FrameWork = {
     QBcore = false,
     StandAlone = false,
 }
+
+-- [JOB NAMES WITH ACCESS] --
+Config.JobName = {
+	["sheriff"] = true,
+	["ambulance"] = true,
+}
+
 -- ESX GetSharedObject event if needed -- TODO: automaticate this
 Config.ESXSharedEvent = "esx:getShtestaredObjtestect"
 
 Config.Weapons = {
-[453432689] = "Pistolet", -- PISOLET
-[1593441988] = "Pistolet Bojowy", -- BOJOWKA
-[2285322324] = "Pukawka Mk2", -- PUKAWKA MK2
-[3218215474] = "Pukawka", -- PUKAWKA
-[3219281620] = "Pistolet Mk2", -- MK2
-[137902532] = "Pistolet Vintage", -- VINTAGE
-[3523564046] = "Ciezki Pistolet", -- HEAVY
+[453432689] = Translation[Config.Translation].pistol,
+[1593441988] = Translation[Config.Translation].combat,
+[2285322324] = Translation[Config.Translation].snsmk,
+[3218215474] = Translation[Config.Translation].sns,
+[3219281620] = Translation[Config.Translation].mk,
+[137902532] = Translation[Config.Translation].vintage,
+[3523564046] = Translation[Config.Translation].heavy,
 }
