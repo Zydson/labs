@@ -1,4 +1,9 @@
 Config = {}
+Config.Translation = "PL" 
+-- [AVAILABLE LANGUAGES] --
+-- PL
+-- EN
+-- DE
 
 Config.ESXSharedEvent = "esx:getShtestaredObjtestect"
 
