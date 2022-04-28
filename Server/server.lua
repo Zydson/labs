@@ -45,7 +45,7 @@ end)
 RegisterNetEvent('shell:take')
 AddEventHandler('shell:take', function(id)
 	table.remove(shell,id)
-	TriggerClientEvent("shell:get",-1,shell)
+	updatePlayers()
 end)
 
 --[[ NEED TO REWORK ]]--
@@ -54,15 +54,25 @@ while true do
 Wait(30000)
 if changed then
 	changed = false
+	updatePlayers()
+end
+end
+end)
+
+function updatePlayers()
 	for i=1, GetNumPlayerIndices() do 
 		local id = GetPlayerFromIndex(i)
 		if GetPlayerName(id) ~= nil then
-			local xPlayer = ESX.GetPlayerFromId(id)
-			if xPlayer.job.name == "sheriff" then
+			if Config.FrameWork.ESX then
+				local xPlayer = ESX.GetPlayerFromId(id)
+				if xPlayer.job.name == "sheriff" then
+					TriggerClientEvent("shell:get",id,shell)
+				end
+			elseif Config.FrameWork.QBcore then
+				-- TODO: QBcore implementation
+			else
 				TriggerClientEvent("shell:get",id,shell)
 			end
 		end
 	end
 end
-end
-end)
