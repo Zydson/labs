@@ -9,7 +9,7 @@ Config.FrameWork = {
     QBcore = false,
     StandAlone = false,
 }
--- ESX GetSharedObject event if needed
+-- ESX GetSharedObject event if needed -- TODO: automaticate this
 Config.ESXSharedEvent = "esx:getShtestaredObjtestect"
 
 Config.Weapons = {
