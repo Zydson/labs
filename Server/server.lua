@@ -2,19 +2,27 @@ if Config.FrameWork.ESX then
 	ESX = nil
 	TriggerEvent(Config.ESXSharedEvent, function(obj) ESX = obj end)
 elseif Config.FrameWork.QBcore then
-	-- QBcore implementation
+	-- TODO: QBcore implementation
 end
 shell = {}
 AddEventHandler("weaponDamageEvent", function(sender, data)
 	math.randomseed(os.time())
 	if math.random(1,2) == 1 then
 		local src = sender
-		local xPlayer = ESX.GetPlayerFromId(src)
-		local job = xPlayer.job.name
-		if job == "sheriff" then
-			police = true
+		if not Config.FrameWork.StandAlone then
+			if Config.FrameWork.ESX then
+				local xPlayer = ESX.GetPlayerFromId(src)
+				local job = xPlayer.job.name
+			elseif
+				-- TODO: QBcore implementation
+			end
+			if job == "sheriff" then
+				police = true
+			else
+				police = false
+			end
 		else
-			police = false
+			police = "none"
 		end
 		local weapon_hash = data.weaponType
 		if Config.Weapons[weapon_hash] then
