@@ -2,38 +2,43 @@ if Config.FrameWork.ESX then
 	ESX = nil
 	TriggerEvent(Config.ESXSharedEvent, function(obj) ESX = obj end)
 elseif Config.FrameWork.QBcore then
-	-- TODO: QBcore implementation
+	QBCore = exports['qb-core']:GetCoreObject()
 end
 shell = {}
 AddEventHandler("weaponDamageEvent", function(sender, data)
-	math.randomseed(os.time())
-	if math.random(1,2) == 1 then
-		local src = sender
-		if not Config.FrameWork.StandAlone then
-			if Config.FrameWork.ESX then
-				local xPlayer = ESX.GetPlayerFromId(src)
-				local job = xPlayer.job.name
-			elseif
-				-- TODO: QBcore implementation
-			end
-			if job == "sheriff" then
-				police = true
+	if data.weaponDamage ~= 500 then -- KOLBA
+		math.randomseed(os.time())
+		if math.random(1,2) == 1 then
+			local src = sender
+			if not Config.FrameWork.StandAlone then
+				if Config.FrameWork.ESX then
+					local xPlayer = ESX.GetPlayerFromId(src)
+					local job = xPlayer.job.name
+				elseif Config.FrameWork.QBcore then
+					local xPlayer = QBCore.Functions.GetPlayer(src)
+					local job = xPlayer.PlayerData.job.name
+				end
+				if Config.JobName[job] then
+					police = true
+				else
+					police = false
+				end
 			else
-				police = false
+				police = "none"
 			end
-		else
-			police = "none"
-		end
-		local weapon_hash = data.weaponType
-		if Config.Weapons[weapon_hash] then
-			local info = {
-				coords = GetEntityCoords(GetPlayerPed(src)),
-				stime = os.date("%H")..":"..os.date("%M"),
-				ispolice = police,
-				weapon = Config.Weapons[weapon_hash],
-			}
-			table.insert(shell,info)
-			changed = true
+			local weapon_hash = data.weaponType
+			if Config.Weapons[weapon_hash] then
+				local info = {
+					coords = GetEntityCoords(GetPlayerPed(src)),
+					stime = os.date("%H")..":"..os.date("%M"),
+					ispolice = police,
+					weapon = Config.Weapons[weapon_hash],
+				}
+				table.insert(shell,info)
+				changed = true
+			else
+				return
+			end
 		else
 			return
 		end
@@ -65,11 +70,14 @@ function updatePlayers()
 		if GetPlayerName(id) ~= nil then
 			if Config.FrameWork.ESX then
 				local xPlayer = ESX.GetPlayerFromId(id)
-				if xPlayer.job.name == "sheriff" then
+				if Config.JobName[xPlayer.job.name] then
 					TriggerClientEvent("shell:get",id,shell)
 				end
 			elseif Config.FrameWork.QBcore then
-				-- TODO: QBcore implementation
+				local xPlayer = QBCore.Functions.GetPlayer(src)
+				if Config.JobName[xPlayer.PlayerData.job.name] then
+					TriggerClientEvent("shell:get",id,shell)
+				end
 			else
 				TriggerClientEvent("shell:get",id,shell)
 			end

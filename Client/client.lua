@@ -3,13 +3,13 @@ if Config.FrameWork.ESX then
 	ESX = nil
 	TriggerEvent(Config.ESXSharedEvent, function(obj) ESX = obj end)
 elseif Config.FrameWork.QBcore then
-	-- TODO: QBcore implementation
+	QBCore = exports['qb-core']:GetCoreObject()
 end
 
 -- LANGUAGE CHECK
-if string.find(Config.Translation,"PL") or string.find(Config.Translation,"EN") or string.find(Config.Translation,"DE") then
+if string.find(Config.Translation,"PL") or string.find(Config.Translation,"EN") then
 else
-	Config.Translation = "EN" -- SET DEFAULT LANGUAGE IF THERE IS ERROR
+	Config.Translation = "EN" -- SET DEFAULT LANGUAGE IF THERE IS CONFIG ERROR
 end
 
 --[[
@@ -20,7 +20,7 @@ function Notification(txt)
 	if Config.FrameWork.ESX then
 		ESX.ShowNotification(txt)
 	elseif Config.FrameWork.QBcore then
-		-- TODO: QBcore implementation
+		TriggerEvent('QBCore:Notify', tostring(txt), 'success')
 	else
 		SetNotificationTextEntry('STRING')
 		AddTextComponentSubstringPlayerName(txt)
