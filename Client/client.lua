@@ -1,15 +1,68 @@
+-- FRAMEWORK CHECK
 if Config.FrameWork.ESX then
 	ESX = nil
 	TriggerEvent(Config.ESXSharedEvent, function(obj) ESX = obj end)
 elseif Config.FrameWork.QBcore then
-	-- QBcore implementation
+	-- TODO: QBcore implementation
 end
 
-shell = {}
-RegisterNetEvent("shell:get", function(l)
-	shell = l
-end)
+-- LANGUAGE CHECK
+if string.find(Config.Translation,"PL") or string.find(Config.Translation,"EN") or string.find(Config.Translation,"DE") then
+else
+	Config.Translation = "EN" -- SET DEFAULT LANGUAGE IF THERE IS ERROR
+end
 
+--[[
+	FUNCTIONS
+--]]
+
+function Notification(txt)
+	if Config.FrameWork.ESX then
+		ESX.ShowNotification(txt)
+	elseif Config.FrameWork.QBcore then
+		-- TODO: QBcore implementation
+	else
+		SetNotificationTextEntry('STRING')
+		AddTextComponentSubstringPlayerName(txt)
+		DrawNotification(false, true)
+	end
+end
+
+function last()
+    local camCoords = GetPedBoneCoords(pid, 37193, 0.0, 0.0, 0.0)
+    local farCoords = GetCoordsFromCam()
+    local RayHandle = StartExpensiveSynchronousShapeTestLosProbe(camCoords, farCoords, -1, pid, 4)
+    local _, hit, endcoords = GetShapeTestResult(RayHandle)
+    if endcoords[1] == 0.0 then return end
+    return endcoords
+end
+function GetCoordsFromCam()
+    local rot = GetGameplayCamRot(2)
+    local coord = GetGameplayCamCoord()
+    local tZ = rot.z * 0.0174532924
+    local tX = rot.x * 0.0174532924
+    local num = math.abs(math.cos(tX))
+    a = coord.x + (-math.sin(tZ)) * (num + 4.0)
+    b = coord.y + (math.cos(tZ)) * (num + 4.0)
+    c = coord.z + (math.sin(tX) * 8.0)
+    return vector3(a, b, c)
+end
+
+function PickUpShell(id)
+	table.insert(pickedup,shell[id])
+	TriggerServerEvent("shell:take",id)
+	Notification(Translation[Config.Translation].takeshell)
+	Wait(1500)
+	picked = false
+end
+
+--[[
+	THREADS
+--]]
+
+shell = {}
+pickedup = {}
+picked = false
 CreateThread(function()
 while true do
 ped = GetPlayerPed(-1)
@@ -38,8 +91,10 @@ CreateThread(function()
 						if camdist < 1.0 then
 							DrawMarker(28, coordszcord, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.02, 0.02, 237, 255, 14, 140, false, true, 2, nil, nil, false)
 							if IsControlJustReleased(0, 38) then
-								TriggerServerEvent("shell:take",i)
-								ESX.ShowNotification(Translation[Config.Translation].takeshell)
+								if not picked then
+									picked = true
+									PickUpShell(i)
+								end
 							end
 						end
 					end
@@ -57,27 +112,16 @@ CreateThread(function()
   end
 end)
 
-function last()
-    local camCoords = GetPedBoneCoords(pid, 37193, 0.0, 0.0, 0.0)
-    local farCoords = GetCoordsFromCam()
-    local RayHandle = StartExpensiveSynchronousShapeTestLosProbe(camCoords, farCoords, -1, pid, 4)
-    local _, hit, endcoords = GetShapeTestResult(RayHandle)
-    if endcoords[1] == 0.0 then return end
-    return endcoords
-end
-function GetCoordsFromCam()
-    local rot = GetGameplayCamRot(2)
-    local coord = GetGameplayCamCoord()
-    local tZ = rot.z * 0.0174532924
-    local tX = rot.x * 0.0174532924
-    local num = math.abs(math.cos(tX))
-    a = coord.x + (-math.sin(tZ)) * (num + 4.0)
-    b = coord.y + (math.cos(tZ)) * (num + 4.0)
-    c = coord.z + (math.sin(tX) * 8.0)
-    return vector3(a, b, c)
-end
 -- TEMPORAILY HERE --
 RegisterCommand("latarka", function()
 	SetCurrentPedWeapon(ped,-1951375401,true)
 	GiveWeaponToPed(ped,-1951375401,1,false,true)
 end, false)
+
+--[[
+	EVENTS
+--]]
+
+RegisterNetEvent("shell:get", function(l)
+	shell = l
+end)
