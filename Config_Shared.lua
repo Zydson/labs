@@ -1,4 +1,5 @@
 Config = {}
+Translation = {}
 -- [AVAILABLE LANGUAGES] --
 -- PL, EN
 Config.Translation = "PL" 
@@ -18,6 +19,28 @@ Config.JobName = {
 
 -- ESX GetSharedObject event if needed -- TODO: automaticate this
 Config.ESXSharedEvent = "esx:getShtestaredObjtestect"
+
+Translation["PL"] = {
+    takeshell = "Zapakowałeś łuskę do woreczka, zanieś go do laboratorium",
+	pistol = "Pistolet",
+	combat = "Pistolet Bojowy",
+	snsmk = "Pukawka Mk2",
+	sns = "Pukawka",
+	mk = "Pistolet Mk2",
+	vintage = "Pistolet Vintage",
+	heavy = "Ciezki Pistolet",
+}
+
+Translation["EN"] = {
+    takeshell = "U packed shell to bag, take it to labs",
+	pistol = "Pistol",
+	combat = "Combat Pistol",
+	snsmk = "SNS Pistol Mk2",
+	sns = "SNS Pistol",
+	mk = "Pistol Mk2",
+	vintage = "Vintage Pistol",
+	heavy = "Heavy Pistol",
+}
 
 Config.Weapons = {
 [453432689] = Translation[Config.Translation].pistol,
