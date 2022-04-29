@@ -83,16 +83,17 @@ AddEventHandler('shell:take', function(id)
 	updatePlayers()
 end)
 
---[[ NEED TO REWORK ]]--
 CreateThread(function()
 while true do
-Wait(5000)
+Wait(10000)
 if changed then
 	changed = false
 	updatePlayers()
 end
 end
 end)
+
+--[[ NEED TO REWORK ]]--
 
 local function updatePlayers()
 	for i=0, GetNumPlayerIndices() do 
@@ -124,27 +125,27 @@ end
 local function GetFarTime(h,min)
 math.randomseed(os.time())
 local whenrand = math.random(15,30)
-local cgodzina = h
-local cminuta = min + whenrand
-if cminuta > 59 then
-	cminuta = cminuta - 60
-	cgodzina = cgodzina + 1
+local hour = h
+local cmin = min + whenrand
+if cmin > 59 then
+	cmin = cmin - 60
+	hour = hour + 1
 end
-if string.len(cminuta) == 1 then
-	cminuta = tostring("0"..cminuta)
+if string.len(cmin) == 1 then
+	cmin = tostring("0"..cmin)
 end
-local poprzetworzeniu = tostring(cgodzina..":"..cminuta)
+local first = tostring(hour..":"..cmin)
 local whenrand = math.random(10,20)
-local cgodzina = h
-local cminuta = min - whenrand
-if cminuta < 1 then
-	cminuta = cminuta + 60
-	cgodzina = cgodzina - 1
+local hour = h
+local cmin = min - whenrand
+if cmin < 1 then
+	cmin = cmin + 60
+	hour = hour - 1
 end
-if string.len(cminuta) == 1 then
-	cminuta = tostring("0"..cminuta)
+if string.len(cmin) == 1 then
+	cmin = tostring("0"..cmin)
 end
-local poprzetworzeniudwa = tostring(cgodzina..":"..cminuta)
-local koncowa = tostring(poprzetworzeniudwa.." - "..poprzetworzeniu)
-return koncowa
+local second = tostring(hour..":"..cmin)
+local fartime = tostring(second.." - "..first)
+return fartime
 end
