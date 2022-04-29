@@ -1,15 +1,15 @@
-fx_version 'bodacious'
-game 'gta5'
-lua54 'yes'
+fx_version "cerulean"
+game "gta5"
+lua54 "yes"
 
 shared_script {
-	"Config_Shared.lua",
+	"Config_Shared.lua"
 }
 
 server_scripts {
-	"Server/server.lua",
+	"Server/server.lua"
 }
 
 client_scripts {
-	"Client/client.lua",
+	"Client/client.lua"
 }
