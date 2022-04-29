@@ -16,7 +16,7 @@ end
 	FUNCTIONS
 --]]
 
-function Notification(txt)
+local function Notification(txt)
 	if Config.FrameWork.ESX then
 		ESX.ShowNotification(txt)
 	elseif Config.FrameWork.QBcore then
@@ -24,7 +24,7 @@ function Notification(txt)
 	end
 end
 
-function last()
+local function last()
     local camCoords = GetPedBoneCoords(pid, 37193, 0.0, 0.0, 0.0)
     local farCoords = GetCoordsFromCam()
     local RayHandle = StartExpensiveSynchronousShapeTestLosProbe(camCoords, farCoords, -1, pid, 4)
@@ -32,7 +32,8 @@ function last()
     if endcoords[1] == 0.0 then return end
     return endcoords
 end
-function GetCoordsFromCam()
+
+local function GetCoordsFromCam()
     local rot = GetGameplayCamRot(2)
     local coord = GetGameplayCamCoord()
     local tZ = rot.z * 0.0174532924
@@ -44,14 +45,14 @@ function GetCoordsFromCam()
     return vector3(a, b, c)
 end
 
-function PickUpShell(id)
+local function PickUpShell(id)
 	table.insert(pickedup,shell[id])
 	print(id)
 	TriggerServerEvent("shell:take",id)
 	Notification(Translation[Config.Translation].takeshell)
 end
 
-function LowestValue(t)
+local function LowestValue(t)
   local k
   for i, v in pairs(t) do
     k = k or i
@@ -60,7 +61,7 @@ function LowestValue(t)
   return k
 end
 
-function LabMenu() -- TODO: QBCore implementation
+local function LabMenu() -- TODO: QBCore implementation
 	if #pickedup ~= 0 then
 		local elements = {}
 		for i=1,#pickedup do
@@ -109,7 +110,7 @@ function LabMenu() -- TODO: QBCore implementation
 	end
 end
 
-function ClosetMenu(info)
+local function ClosetMenu(info)
 	local elements = {}
 	for shell, x in pairs(info) do
 		table.insert(elements, {label = Translation[Config.Translation].shell..' ['..tostring(shell)..']', value = shell})
@@ -238,7 +239,9 @@ if picked then
 end
 end
 end)
+
 -- GIVE SHELL MARKER
+
 CreateThread(function()
 while true do
 Wait(4)
@@ -257,7 +260,9 @@ else
 end
 end
 end)
+
 -- CLOSET MARKER
+
 CreateThread(function()
 while true do
 Wait(4)
@@ -277,6 +282,10 @@ end
 end
 end)
 
+--[[
+COMMANDS
+--]]
+
 RegisterCommand("openlabsm", function()
 	if #(GetEntityCoords(pid)-Config.LabCoordsGive) < 1.1 then
 		LabMenu()
@@ -287,13 +296,6 @@ RegisterCommand("openlabsm", function()
 end, false)
 
 RegisterKeyMapping("openlabsm",Translation[Config.Translation].binddesc,"keyboard","E")
-
--- TEMPORAILY HERE --
-
-RegisterCommand("latarka", function()
-	SetCurrentPedWeapon(ped,-1951375401,true)
-	GiveWeaponToPed(ped,-1951375401,1,false,true)
-end, false)
 
 --[[
 	EVENTS
@@ -306,3 +308,26 @@ end)
 RegisterNetEvent("shell:getinfos", function(get)
 	ClosetMenu(get)
 end)
+--[[
+AddEventHandler('gameEventTriggered', function(ev, inf)
+	if ev == 'CEventNetworkEntityDamage' then
+		print(ev,table.unpack(inf))
+	end
+	if ev == "CEventDamage" then
+		print(ev,table.unpack(inf))
+	end
+	if ev == "CEventEntityDamaged" then
+		print(ev,table.unpack(inf))
+	end
+	if ev == "CEventDataFileMounter" then
+		print(ev,table.unpack(inf))
+	end
+	if ev == "CEventDataDecisionMaker" then
+		print(ev,table.unpack(inf))
+	end
+	if ev == "CEventInfo" then
+		print(ev,table.unpack(inf))
+	end
+	print(ev)
+end)
+--]]

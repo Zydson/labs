@@ -10,7 +10,7 @@ shell = {}
 AddEventHandler("weaponDamageEvent", function(sender, data)
 	if data.weaponDamage ~= 500 then -- KOLBA
 		math.randomseed(os.time())
-		--if math.random(1,2) == 1 then
+		if math.random(1,2) == 1 then
 			local src = sender
 			if Config.FrameWork.ESX then
 				local xPlayer = ESX.GetPlayerFromId(src)
@@ -40,9 +40,9 @@ AddEventHandler("weaponDamageEvent", function(sender, data)
 			else
 				return
 			end
-		--else
-		--	return
-		--end
+		else
+			return
+		end
 	else
 		return
 	end
@@ -83,6 +83,11 @@ AddEventHandler('shell:take', function(id)
 	updatePlayers()
 end)
 
+RegisterNetEvent('blood:send')
+AddEventHandler('blood:send', function(id)
+	print(GetPlayerName(source),id,GetPlayerName(id))
+end)
+
 --[[ NEED TO REWORK ]]--
 CreateThread(function()
 while true do
@@ -94,7 +99,7 @@ end
 end
 end)
 
-function updatePlayers()
+local function updatePlayers()
 	for i=0, GetNumPlayerIndices() do 
 		local id = GetPlayerFromIndex(i)
 		if id ~= nil and id ~= 0 then
@@ -121,7 +126,7 @@ function updatePlayers()
 	end
 end
 
-function GetFarTime(h,min)
+local function GetFarTime(h,min)
 math.randomseed(os.time())
 local whenrand = math.random(15,30)
 local cgodzina = h
@@ -148,17 +153,3 @@ local poprzetworzeniudwa = tostring(cgodzina..":"..cminuta)
 local koncowa = tostring(poprzetworzeniudwa.." - "..poprzetworzeniu)
 return koncowa
 end
-				
-RegisterCommand("shell", function(source, args, rawCommand)
-	local info = {
-		coords = GetEntityCoords(GetPlayerPed(args[1])),
-		when = os.date("%D"),
-		hour = os.date("%H"),
-		minute = os.date("%M"),
-		ispolice = true,
-		weapon = "Pistolet Bojowy",
-		id = math.random(10000,1000000),
-	}
-	table.insert(shell,info)
-	changed = true
-end, false)
