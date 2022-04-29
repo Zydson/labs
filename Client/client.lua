@@ -21,10 +21,6 @@ function Notification(txt)
 		ESX.ShowNotification(txt)
 	elseif Config.FrameWork.QBcore then
 		TriggerEvent('QBCore:Notify', tostring(txt), 'success')
-	else
-		SetNotificationTextEntry('STRING')
-		AddTextComponentSubstringPlayerName(txt)
-		DrawNotification(false, true)
 	end
 end
 
@@ -64,31 +60,44 @@ function LowestValue(t)
   return k
 end
 
-function LabMenu()
+function LabMenu() -- TODO: QBCore implementation
 	if #pickedup ~= 0 then
 		local elements = {}
 		for i=1,#pickedup do
-			table.insert(elements, {label = 'Luska ['..tostring(pickedup[i].id)..']', value = pickedup[i].id})
+			table.insert(elements, {label = Translation[Config.Translation].shell..' ['..tostring(pickedup[i].id)..']', value = pickedup[i].id})
 		end
 		ESX.UI.Menu.CloseAll()
 	
 		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'luski', 
 		{
-			title    = ('Laboratorium'),
+			title    = (Translation[Config.Translation].lab),
 			align    = 'center',
 			elements = elements
 		}, function(data, menu)
 		for i=1,#pickedup do
 			if tostring(pickedup[i].id) == tostring(data.current.value) then
-				TriggerServerEvent("shell:give",
-					pickedup[i].weapon,
-					pickedup[i].hour,
-					pickedup[i].minute,
-					pickedup[i].ispolice,
-					pickedup[i].id
-				)
-				Notification("Oddałeś łuskę, wkrótce otrzymasz smsa z informacjami")
-				table.remove(pickedup,i)
+					ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'opis', {
+						title = Translation[Config.Translation].description
+					}, function(data2, menu2)
+						if string.len(data2.value) >= 5 and string.len(data2.value) <= 30 then
+							TriggerServerEvent("shell:give",
+								pickedup[i].weapon,
+								pickedup[i].when,
+								pickedup[i].hour,
+								pickedup[i].minute,
+								pickedup[i].ispolice,
+								pickedup[i].id,
+								data2.value
+							)
+							Notification(Translation[Config.Translation].giveshell)
+							table.remove(pickedup,i)
+						else
+							Notification(Translation[Config.Translation].descriptionerror)
+						end
+						menu2.close()
+					end, function(data2, menu2)
+						menu2.close()
+					end)
 				menu.close()
 			end
 		end
@@ -96,8 +105,54 @@ function LabMenu()
 			menu.close()
 		end)
 	else
-		Notification("Nie posiadasz przy sobie żadnych łusek")
+		Notification(Translation[Config.Translation].noshells)
 	end
+end
+
+function ClosetMenu(info)
+	local elements = {}
+	for shell, x in pairs(info) do
+		table.insert(elements, {label = Translation[Config.Translation].shell..' ['..tostring(shell)..']', value = shell})
+	end
+
+	ESX.UI.Menu.CloseAll()
+	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'szafka_luski', 
+	{
+		title    = (Translation[Config.Translation].docs),
+		align    = 'center',
+		elements = elements
+	}, function(data, menu)
+		for shell, x in pairs(info) do
+			if shell == data.current.value then
+				local elements2 = {}
+				table.insert(elements2, {label = x["weapon"], value = "weapon"})
+				table.insert(elements2, {label = x["timee"], value = "date"})
+				if tostring(x["ispolice"]) == "true" then
+					table.insert(elements2, {label = Translation[Config.Translation].police, value = "ispolice"})
+				else
+					table.insert(elements2, {label = Translation[Config.Translation].civil, value = "ispolice"})
+				end
+				table.insert(elements2, {label = x["description"], value = "desc"})
+				table.insert(elements2, {label = Translation[Config.Translation].delete, value = "delete"})
+				ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'info_luska', 
+				{
+					title    = (Translation[Config.Translation].shell..' ['..shell.."]"),
+					align    = 'center',
+					elements = elements2
+				}, function(data2, menu2)
+					if data2.current.value == "delete" then
+						TriggerServerEvent("shell:delete",shell)
+						menu2.close()
+					end
+				end, function(data2, menu2)
+					menu2.close()
+				end)
+				menu.close()
+			end
+		end
+	end, function(data, menu)
+		menu.close()
+	end)
 end
 
 --[[
@@ -183,15 +238,38 @@ if picked then
 end
 end
 end)
-
+-- GIVE SHELL MARKER
 CreateThread(function()
 while true do
 Wait(4)
-local MarkerDist = #(GetEntityCoords(pid)-Config.LabCoords)
+local MarkerDist = #(GetEntityCoords(pid)-Config.LabCoordsGive)
 if MarkerDist < 9.0 then
-	DrawMarker(1, Config.LabCoords, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.7, 237, 255, 14, 140, false, true, 2, nil, nil, false)
+	DrawMarker(1, Config.LabCoordsGive, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.7, 237, 255, 14, 140, false, true, 2, nil, nil, false)
 	if MarkerDist < 1.1 then
-		ESX.ShowHelpNotification("Naciśnij ~INPUT_CONTEXT~ aby oddać łuske do labolaborium")
+		if Config.FrameWork.ESX then
+			ESX.ShowHelpNotification(Translation[Config.Translation].pressgive)
+		elseif Config.FrameWork.QBCore then
+			-- TODO: QBCore implementation
+		end
+	end
+else
+	Wait(1500)
+end
+end
+end)
+-- CLOSET MARKER
+CreateThread(function()
+while true do
+Wait(4)
+local MarkDist = #(GetEntityCoords(pid)-Config.LabCoordsCloset)
+if MarkDist < 9.0 then
+	DrawMarker(1, Config.LabCoordsCloset, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.7, 237, 255, 14, 140, false, true, 2, nil, nil, false)
+	if MarkDist < 1.1 then
+		if Config.FrameWork.ESX then
+			ESX.ShowHelpNotification(Translation[Config.Translation].pressopen)
+		elseif Config.FrameWork.QBCore then
+			-- TODO: QBCore implementation
+		end
 	end
 else
 	Wait(1500)
@@ -199,13 +277,16 @@ end
 end
 end)
 
-RegisterCommand("openlab", function()
-	if #(GetEntityCoords(pid)-Config.LabCoords) < 1.1 then
+RegisterCommand("openlabsm", function()
+	if #(GetEntityCoords(pid)-Config.LabCoordsGive) < 1.1 then
 		LabMenu()
+	end
+	if #(GetEntityCoords(pid)-Config.LabCoordsCloset) < 1.1 then
+		TriggerServerEvent("shell:getinfo")
 	end
 end, false)
 
-RegisterKeyMapping("openlab","Otwieranie menu labow","keyboard","E")
+RegisterKeyMapping("openlabsm",Translation[Config.Translation].binddesc,"keyboard","E")
 
 -- TEMPORAILY HERE --
 
@@ -220,4 +301,8 @@ end, false)
 
 RegisterNetEvent("shell:get", function(l)
 	shell = l
+end)
+
+RegisterNetEvent("shell:getinfos", function(get)
+	ClosetMenu(get)
 end)

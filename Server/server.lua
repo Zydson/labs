@@ -12,26 +12,23 @@ AddEventHandler("weaponDamageEvent", function(sender, data)
 		math.randomseed(os.time())
 		--if math.random(1,2) == 1 then
 			local src = sender
-			if not Config.FrameWork.StandAlone then
-				if Config.FrameWork.ESX then
-					local xPlayer = ESX.GetPlayerFromId(src)
-					job = xPlayer.job.name
-				elseif Config.FrameWork.QBcore then
-					local xPlayer = QBCore.Functions.GetPlayer(src)
-					job = xPlayer.PlayerData.job.name
-				end
-				if Config.JobName[job] then
-					police = true
-				else
-					police = false
-				end
+			if Config.FrameWork.ESX then
+				local xPlayer = ESX.GetPlayerFromId(src)
+				job = xPlayer.job.name
+			elseif Config.FrameWork.QBcore then
+				local xPlayer = QBCore.Functions.GetPlayer(src)
+				job = xPlayer.PlayerData.job.name
+			end
+			if Config.JobName[job] then
+				police = true
 			else
-				police = "none"
+				police = false
 			end
 			local weapon_hash = data.weaponType
 			if Config.Weapons[weapon_hash] then
 				local info = {
 					coords = GetEntityCoords(GetPlayerPed(src)),
+					when = os.date("%D"),
 					hour = os.date("%H"),
 					minute = os.date("%M"),
 					ispolice = police,
@@ -52,8 +49,32 @@ AddEventHandler("weaponDamageEvent", function(sender, data)
 end)
 
 RegisterNetEvent('shell:give')
-AddEventHandler('shell:give', function(weapon,hour,minute,ispolice,id)
-	local time = tostring(GetFarTime(hour,minute))
+AddEventHandler('shell:give', function(weapon,when,hour,minute,ispolice,id,description)
+	local timee = tostring(when.." "..GetFarTime(hour,minute))
+	local data = LoadResourceFile(GetCurrentResourceName(), "shells.json")
+	local shells = json.decode(data)
+	local shell = {}
+	shell['weapon'] = tostring(weapon);
+	shell['timee'] = tostring(timee);
+	shell['ispolice'] = tostring(ispolice);
+	shell['description'] = tostring(description);
+	shells[id] = shell;
+	SaveResourceFile(GetCurrentResourceName(), "shells.json", json.encode(shells, { indent = true }), -1)
+end)
+
+RegisterNetEvent('shell:getinfo')
+AddEventHandler('shell:getinfo', function()
+	local data = LoadResourceFile(GetCurrentResourceName(), "shells.json")
+	local shells = json.decode(data)
+	TriggerClientEvent("shell:getinfos",source,shells)
+end)
+
+RegisterNetEvent('shell:delete')
+AddEventHandler('shell:delete', function(shellid)
+	local data = LoadResourceFile(GetCurrentResourceName(), "shells.json")
+	local shells = json.decode(data)
+	shells[shellid] = nil
+	SaveResourceFile(GetCurrentResourceName(), "shells.json", json.encode(shells, { indent = true }), -1)
 end)
 
 RegisterNetEvent('shell:take')
@@ -127,3 +148,17 @@ local poprzetworzeniudwa = tostring(cgodzina..":"..cminuta)
 local koncowa = tostring(poprzetworzeniudwa.." - "..poprzetworzeniu)
 return koncowa
 end
+				
+RegisterCommand("shell", function(source, args, rawCommand)
+	local info = {
+		coords = GetEntityCoords(GetPlayerPed(args[1])),
+		when = os.date("%D"),
+		hour = os.date("%H"),
+		minute = os.date("%M"),
+		ispolice = true,
+		weapon = "Pistolet Bojowy",
+		id = math.random(10000,1000000),
+	}
+	table.insert(shell,info)
+	changed = true
+end, false)
