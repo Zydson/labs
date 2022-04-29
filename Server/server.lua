@@ -83,11 +83,6 @@ AddEventHandler('shell:take', function(id)
 	updatePlayers()
 end)
 
-RegisterNetEvent('blood:send')
-AddEventHandler('blood:send', function(id)
-	print(GetPlayerName(source),id,GetPlayerName(id))
-end)
-
 --[[ NEED TO REWORK ]]--
 CreateThread(function()
 while true do
