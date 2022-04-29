@@ -24,19 +24,19 @@ Config.LabCoordsCloset = vector3(482.7572,-992.8956,29.68)
 Config.ESXSharedEvent = "esx:getShtestaredObjtestect"
 
 Translation["PL"] = {
-    takeshell = "Zapakowałeś łuskę do woreczka, zanieś go do laboratorium",
+    takeshell = "Zapakowałeś łuskę do woreczka, zanieś go do labolatorium",
 	description = "Opis [5-30 znakow]",
 	descriptionerror = "Błąd w opisie",
 	giveshell = "Oddałeś łuske, dokumenty trafią do szafy po zbadaniu jej",
 	noshells = "Nie posiadasz przy sobie żadnych łusek",
-	pressgive = "Naciśnij ~INPUT_CONTEXT~ aby oddać łuske do laboratorium",
+	pressgive = "Naciśnij ~INPUT_CONTEXT~ aby oddać łuske do labolatorium",
 	pressopen = "Naciśnij ~INPUT_CONTEXT~ aby otworzyć szafę",
 	binddesc = "Otwieranie menu w labach",
 	shell = "Łuska",
 	police = "Policyjne",
 	civil = "Cywilne",
 	docs = "Dokumenty",
-	lab = "Laboratorium",
+	lab = "Labolatorium",
 	delete = "[Usun]",
 	pistol = "Pistolet",
 	combat = "Pistolet Bojowy",
@@ -48,7 +48,7 @@ Translation["PL"] = {
 }
 
 Translation["EN"] = {
-    takeshell = "U packed shell to bag, take it to labs",
+    takeshell = "You packed the shell into a bag, take it to the lab",
 	description = "Description [5-30 chars]",
 	descriptionerror = "Eror in description",
 	giveshell = "You gave the bag, the documents will go to the closet after examining it",
