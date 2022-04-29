@@ -6,9 +6,8 @@ elseif Config.FrameWork.QBcore then
 	QBCore = exports['qb-core']:GetCoreObject()
 end
 
--- LANGUAGE CHECK
-if string.find(Config.Translation,"PL") or string.find(Config.Translation,"EN") then
-else
+-- LANUGAGE CHECK
+if Config.Translation ~= "PL" and Config.Translation ~= "EN" then
 	Config.Translation = "EN" -- SET DEFAULT LANGUAGE IF THERE IS CONFIG ERROR
 end
 
@@ -24,7 +23,7 @@ local function Notification(txt)
 	end
 end
 
-local function last()
+local function GetCamCoords()
     local camCoords = GetPedBoneCoords(pid, 37193, 0.0, 0.0, 0.0)
     local farCoords = GetCoordsFromCam()
     local RayHandle = StartExpensiveSynchronousShapeTestLosProbe(camCoords, farCoords, -1, pid, 4)
@@ -189,7 +188,7 @@ CreateThread(function()
 					local playercoords = GetEntityCoords(pid)
 					if #(playercoords-objectcoords) < 3.5 then
 						local grounded,zcord = GetGroundZFor_3dCoord(objectcoords.x,objectcoords.y,objectcoords.z,1)
-						local camcord = last()
+						local camcord = GetCamCoords()
 						if camcord ~= nil then
 							local coordszcord = vector3(objectcoords.x,objectcoords.y,zcord+0.2)
 							local camdist = #(camcord-coordszcord)
@@ -240,7 +239,7 @@ end
 end
 end)
 
--- GIVE SHELL MARKER
+-- RETURN SHELL MARKER
 
 CreateThread(function()
 while true do
