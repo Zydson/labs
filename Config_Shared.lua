@@ -20,9 +20,6 @@ Config.JobName = {
 Config.LabCoordsGive = vector3(482.513, -988.598, 29.68)
 Config.LabCoordsCloset = vector3(482.7572, -992.8956, 29.68)
 
--- ESX GetSharedObject event if needed -- TODO: automaticate this
-Config.ESXSharedEvent = "esx:getShtestaredObjtestect"
-
 Translation["PL"] = {
 	takeshell = "Zapakowałeś łuskę do woreczka, zanieś go do labolatorium",
 	description = "Opis [5-30 znaków]",
