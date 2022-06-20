@@ -2,13 +2,7 @@ math.randomseed(os.time())
 
 if Config.FrameWork.ESX then
 	ESX = nil
-
-	TriggerEvent(
-		Config.ESXSharedEvent,
-		function(obj)
-			ESX = obj
-		end
-	)
+	ESX = exports["es_extended"]:getSharedObject()
 elseif Config.FrameWork.QBcore then
 	QBCore = exports["qb-core"]:GetCoreObject()
 end
